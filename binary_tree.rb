@@ -9,7 +9,7 @@ class BinaryTree
     attr_accessor :left, :right, :value, :count
 
     def initialize(key, value)
-      @key, @value, @count = key, value, 1
+      @key, @value, @count = key, [value], 1
     end
   end
 
@@ -31,6 +31,10 @@ class BinaryTree
     node_min(@root).key
   end
 
+  def max
+    node_max(@root).key
+  end
+
   def delete!(key)
     @root = delete_node(@root, key)
   end
@@ -45,9 +49,12 @@ class BinaryTree
     queue.to_a
   end
 
-  def range(lo, hi)
+  def range(lo=nil, hi=nil)
+    return [] if lo.nil? && hi.nil?
+    lo = self.min if lo.nil?
+    hi = self.max if hi.nil?
     q = keys(lo, hi)
-    Array.new(q.size){|idx| self.get(q.dequeue!) }
+    Array.new(q.size){|idx| self.get(q[idx]) }
   end
 
   private
@@ -78,7 +85,7 @@ class BinaryTree
       when 1
         node.right = node_put(node.right, key, value)
       else
-        node.value = value
+        node.value |= [value]
     end
     node.count = node_size(node.left) + node_size(node.right) + 1
     node
@@ -87,6 +94,11 @@ class BinaryTree
   def node_min(node)
     return node if node.left.nil?
     node_min(node.left)
+  end
+
+  def node_max(node)
+    return node if node.right.nil?
+    node_max(node.right)
   end
 
   def delete_min_node(node)
