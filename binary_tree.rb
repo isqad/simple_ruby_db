@@ -1,5 +1,3 @@
-require './queue'
-
 class BinaryTree
 
   attr_reader :root
@@ -44,9 +42,9 @@ class BinaryTree
   end
 
   def keys(lo, hi)
-    queue = Queue.new
+    queue = []
     keys_node(@root, queue, lo, hi)
-    queue.to_a
+    queue
   end
 
   def range(lo=nil, hi=nil)
@@ -132,7 +130,7 @@ class BinaryTree
     cmplo = lo <=> node.key
     cmphi = hi <=> node.key
     keys_node(node.left, queue, lo, hi) if cmplo < 0
-    queue.enqueue!(node.key) if cmplo <= 0 && cmphi >= 0
+    queue.push(node.key) if cmplo <= 0 && cmphi >= 0
     keys_node(node.right, queue, lo, hi) if cmphi > 0
   end
 end
